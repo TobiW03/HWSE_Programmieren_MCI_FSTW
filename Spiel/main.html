@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Spiel</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <img id="dynoImg" src="dyno.webp" style="display:none">
+    <script>
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+        const width = 1200;
+        const height = 500;
+        canvas.width = width;
+        canvas.height = height;
+
+        const dynoImg = document.getElementById('dynoImg');
+
+        class Sprite {
+            constructor(x, y, w, h, drawFn) {
+                this.x = x;
+                this.y = y;
+                this.w = w;
+                this.h = h;
+                this.drawFn = drawFn;
+                this.dy = 0;
+                this.gravity = 0.5;
+                this.jumpStrength = 10;
+                this.isJumping = false;
+            }
+
+            draw(ctx, frame) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                this.drawFn(ctx, this.w, this.h, frame);
+                ctx.restore();
+            }
+
+            move() {
+                if (this.isJumping) {
+                    this.dy += this.gravity;
+                    this.y += this.dy;
+
+                    if (this.y >= height - this.h - 5) {
+                        this.y = height - this.h - 5;
+                        this.isJumping = false;
+                        this.dy = 0;
+                    }
+                }
+            }
+
+            jump() {
+                if (!this.isJumping) {
+                    this.isJumping = true;
+                    this.dy = -this.jumpStrength;
+                }
+            }
+        }
+
+        function drawDyno(ctx, w, h, frame) {
+            const img = document.getElementById('dynoImg');
+            ctx.drawImage(img, w * (frame % 6), 0, w, h, 0, 0, w, h);
+        }
+
+        class Cactus {
+            constructor(x, y, w, h) {
+                this.x = x;
+                this.y = y;
+                this.w = w;
+                this.h = h;
+            }
+
+            draw(ctx) {
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 3;
+
+                // Draw cactus body
+                ctx.beginPath();
+                ctx.moveTo(this.x + this.w / 2, this.y);
+                ctx.lineTo(this.x + this.w / 2, this.y + this.h);
+                ctx.stroke();
+
+                // Draw left arm
+                ctx.beginPath();
+                ctx.moveTo(this.x + this.w / 2, this.y + this.h / 4);
+                ctx.lineTo(this.x + this.w / 4, this.y + this.h / 4);
+                ctx.lineTo(this.x + this.w / 4, this.y);
+                ctx.stroke();
+
+                // Draw right arm
+                ctx.beginPath();
+                ctx.moveTo(this.x + this.w / 2, this.y + this.h / 2);
+                ctx.lineTo(this.x + this.w * 3 / 4, this.y + this.h / 2);
+                ctx.lineTo(this.x + this.w * 3 / 4, this.y + this.h / 4);
+                ctx.stroke();
+            }
+
+            move(speed) {
+                this.x -= speed;
+            }
+        }
+
+        const dynoW = 88;
+        const dynoH = 94;
+        let dyno;
+        let cacti;
+        let frame;
+        const speed = 5;
+        let gameOver = false;
+        let cactusInterval = 2000; // Initial interval of 2 seconds
+        let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
+        let startTime; // Variable to store the start time
+
+        function init() {
+            dyno = new Sprite(60, height - dynoH - 5, dynoW, dynoH, drawDyno);
+            cacti = [];
+            frame = 0;
+            gameOver = false;
+            cactusInterval = 2000; // Reset interval to 2 seconds
+            startTime = Date.now(); // Set the start time
+            cactiPassed = 0; 
+            addCactus();
+            increaseSpeed();
+            animate();
+        }
+
+        function addCactus() {
+            if (gameOver) return;
+            const lastCactus = cacti[cacti.length - 1];
+            const minDistance = dynoW * 2;
+            const cactus = new Cactus(width, height - 50, 20, 50);
+            if (!lastCactus || (width - lastCactus.x) >= minDistance) {
+                cacti.push(cactus);
+            }
+            setTimeout(addCactus, Math.random() * cactusInterval + 500); // Random interval based on cactusInterval
+        }
+
+        function increaseSpeed() {
+            if (gameOver) return;
+            cactusInterval = Math.max(400, cactusInterval - 150); // Decrease interval, but not less than 400ms
+            setTimeout(increaseSpeed, speedIncreaseInterval); // Schedule next speed increase
+        }
+
+        function checkCollision(dino, cactus) {
+            const buffer = 8; // Adjust this value to fine-tune the collision detection
+            return (
+                dino.x + buffer < cactus.x + cactus.w - buffer &&
+                dino.x + dino.w - buffer > cactus.x + buffer &&
+                dino.y + buffer < cactus.y + cactus.h - buffer &&
+                dino.y + dino.h - buffer > cactus.y + buffer
+            );
+        }
+
+        function drawTimeandCactipassed() {
+            const currentTime = Date.now();
+            const elapsedTime = ((currentTime - startTime) / 1000).toFixed(1); // Calculate elapsed time in seconds
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText(`Time: ${elapsedTime}s`, width - 160, 30); // Display time in the top right corner
+            ctx.fillText(`Cacti passed: ${cactiPassed}`, width - 160, 60); // Display cacti passed in the top right corner
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                dyno.jump();
+            }
+        });
+
+        function animate() {
+            if (gameOver) return;
+
+            frame++;
+            ctx.clearRect(0, 0, width, height);
+            dyno.move();
+            dyno.draw(ctx, frame);
+            cacti.forEach((cactus, index) => {
+                cactus.move(speed);
+                cactus.draw(ctx);
+                if (checkCollision(dyno, cactus)) {
+                    gameOver = true;
+                    alert('Game Over');
+                    setTimeout(init, 1000); // Restart the game after 1 second
+                }
+                if (cactus.x + cactus.w < 0) {
+                    cacti.splice(index, 1); // Remove cactus if it goes off screen
+                }
+                if (cactus.x + cactus.w < dyno.x && !cactus.passed) {
+                    cactus.passed = true; // Mark cactus as passed
+                    cactiPassed++; // Increment the cactus counter
+                }
+            });
+            drawTimeandCactipassed(); // Draw the elapsed time and cacti passed
+            requestAnimationFrame(animate);
+        }
+
+        init();
+    </script>
+</body>
+</html>
