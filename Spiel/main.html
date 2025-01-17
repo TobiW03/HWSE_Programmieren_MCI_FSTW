@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="de">
+<!DOCTYPE html> #<!DOCTYPE html> is an instruction to the web browser about what version of HTML the page is written in. It must only appear once, at the top of the page (before any HTML tags).
+<html lang="de"> #The <html> tag represents the root of an HTML document. The lang attribute specifies the language of the document.
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> #The <meta> tag provides metadata about the HTML document. The charset attribute specifies the character encoding for the document.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dino Spiel</title>
     <style>
@@ -11,29 +11,29 @@
     </style>
 </head>
 <body>
-    <canvas id="c"></canvas>
+    <canvas id="c"></canvas> #The <canvas> element is used to draw graphics, on the fly, via JavaScript.
     <img id="dynoImg" src="dyno.webp" style="display:none">
     <script>
-        const canvas = document.getElementById('c');
-        const ctx = canvas.getContext('2d');
-        const width = 1200;
-        const height = 500;
-        canvas.width = width;
-        canvas.height = height;
+        const canvas = document.getElementById('c'); // Get the canvas element
+        const ctx = canvas.getContext('2d'); // Get the 2D rendering context for the canvas
+        const width = 1200; // Set the width of the canvas
+        const height = 500; // Set the height of the canvas
+        canvas.width = width; // Set the width of the canvas element
+        canvas.height = height; // Set the height of the canvas element
 
         const dynoImg = document.getElementById('dynoImg');
 
         class Sprite {
             constructor(x, y, w, h, drawFn) {
-                this.x = x;
-                this.y = y;
-                this.w = w;
-                this.h = h;
-                this.drawFn = drawFn;
-                this.dy = 0;
-                this.gravity = 0.5;
-                this.jumpStrength = 10;
-                this.isJumping = false;
+                this.x = x; // x-coordinate of the sprite
+                this.y = y; // y-coordinate of the sprite
+                this.w = w; // width of the sprite
+                this.h = h; // height of the sprite
+                this.drawFn = drawFn; // draw function for the sprite
+                this.dy = 0; // vertical speed of the sprite
+                this.gravity = 0.5; // gravity value
+                this.jumpStrength = 10; // jump strength value
+                this.isJumping = false; // flag to indicate if the sprite is jumping
             }
 
             draw(ctx, frame) {
