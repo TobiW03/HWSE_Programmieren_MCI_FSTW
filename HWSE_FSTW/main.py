@@ -79,7 +79,7 @@ class ESP32_BLE():
 
     # Methode zum Senden von Daten über BLE (Benachrichtigungen)
     def send(self, data):
-        self.ble.gatts_notify(0, self.tx, data + 'n')  # Sende eine Nachricht (Benachrichtigung)
+        self.ble.gatts_notify(0, self.tx, data)  # Sende eine Nachricht (Benachrichtigung)
 
     # Startet die Werbung, sodass der ESP32 von anderen Geräten gefunden werden kann
     def advertiser(self):

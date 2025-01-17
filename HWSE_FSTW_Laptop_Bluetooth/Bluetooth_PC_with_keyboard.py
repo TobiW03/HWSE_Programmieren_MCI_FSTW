@@ -1,8 +1,7 @@
-
 # Wir importieren die notwendigen Bibliotheken:
-import asyncio
-from bleak import BleakClient
-import keyboard  # Neue Bibliothek zur Simulation von Tasteneingaben
+import asyncio #asyncio ist eine Bibliothek, die es ermöglicht, asynchrone Funktionen auszuführen
+from bleak import BleakClient #Bleak ist eine Bibliothek, die es ermöglicht, mit Bluetooth Low Energy (BLE) Geräten zu kommunizieren
+import keyboard  #Bibliothek zur Simulation von Tasteneingaben
 
 # Die MAC-Adresse des ESP32. Diese muss mit der tatsächlichen MAC-Adresse des ESP32 übereinstimmen.
 ESP32_ADDRESS = "7C:9E:BD:61:9E:76"  # Beispiel: Ersetze dies mit der korrekten MAC-Adresse
@@ -15,7 +14,7 @@ CHARACTERISTIC_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 def notification_handler(sender, data):
     message = data.decode("utf-8").strip()
     print(f"Empfangen: {message}")  # Ausgabe der empfangenen Nachricht
-    if message == "Sprungn":
+    if message == "Sprung":
         print("Simuliere Tastendruck: Leertaste")
         keyboard.press_and_release('space')  # Leertaste simulieren
 
