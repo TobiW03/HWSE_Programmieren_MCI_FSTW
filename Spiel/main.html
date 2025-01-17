@@ -1,7 +1,7 @@
-<!DOCTYPE html> #<!DOCTYPE html> is an instruction to the web browser about what version of HTML the page is written in. It must only appear once, at the top of the page (before any HTML tags).
-<html lang="de"> #The <html> tag represents the root of an HTML document. The lang attribute specifies the language of the document.
+<!DOCTYPE html>
+<html lang="de"> 
 <head>
-    <meta charset="UTF-8"> #The <meta> tag provides metadata about the HTML document. The charset attribute specifies the character encoding for the document.
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dino Spiel</title>
     <style>
@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <canvas id="c"></canvas> #The <canvas> element is used to draw graphics, on the fly, via JavaScript.
+    <canvas id="c"></canvas>
     <img id="dynoImg" src="dyno.webp" style="display:none">
     <script>
         const canvas = document.getElementById('c'); // Get the canvas element
@@ -65,8 +65,8 @@
         }
 
         function drawDyno(ctx, w, h, frame) {
-            const img = document.getElementById('dynoImg');
-            ctx.drawImage(img, w * (frame % 6), 0, w, h, 0, 0, w, h);
+            const img = document.getElementById('dynoImg'); // Get the dino image
+            ctx.drawImage(img, w * (frame % 6), 0, w, h, 0, 0, w, h); // Draw the dino sprite
         }
 
         class Cactus {
