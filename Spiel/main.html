@@ -44,22 +44,22 @@
             }
 
             move() {
-                if (this.isJumping) {
-                    this.dy += this.gravity;
-                    this.y += this.dy;
+                if (this.isJumping) { // If the dino is jumping, do the following every frame
+                    this.dy += this.gravity; // Add gravity to the vertical speed
+                    this.y += this.dy; // Move the dino up or down
 
-                    if (this.y >= height - this.h - 5) {
-                        this.y = height - this.h - 5;
-                        this.isJumping = false;
-                        this.dy = 0;
+                    if (this.y >= height - this.h - 5) { // If the dino is on the ground or below the ground
+                        this.y = height - this.h - 5; // Set the dino to the ground
+                        this.isJumping = false; // Stop jumping
+                        this.dy = 0; // Reset the vertical speed
                     }
                 }
             }
 
             jump() {
-                if (!this.isJumping) {
-                    this.isJumping = true;
-                    this.dy = -this.jumpStrength;
+                if (!this.isJumping) { // If the dino is not already jumping
+                    this.isJumping = true; // Start jumping
+                    this.dy = -this.jumpStrength; // Set the vertical speed to the jump strength
                 }
             }
         }
@@ -112,7 +112,7 @@
         let dyno;
         let cacti;
         let frame;
-        const speed = 5;
+        const speed = 5; // Initial speed of 5 pixels per frame for the cacti
         let gameOver = false;
         let cactusInterval = 2000; // Initial interval of 2 seconds
         let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
@@ -124,20 +124,20 @@
             frame = 0;
             gameOver = false;
             cactusInterval = 2000; // Reset interval to 2 seconds
-            startTime = Date.now(); // Set the start time
-            cactiPassed = 0; 
+            startTime = Date.now(); // Set the start time to the current time for calculating elapsed time
+            cactiPassed = 0; // Reset the cacti passed counter
             addCactus();
             increaseSpeed();
             animate();
         }
 
         function addCactus() {
-            if (gameOver) return;
-            const lastCactus = cacti[cacti.length - 1];
+            if (gameOver) return; // Don't add cacti if the game is over
+            const lastCactus = cacti[cacti.length - 1]; // Get the last cactus
             const minDistance = dynoW * 2;
-            const cactus = new Cactus(width, height - 50, 20, 50);
-            if (!lastCactus || (width - lastCactus.x) >= minDistance) {
-                cacti.push(cactus);
+            const cactus = new Cactus(width, height - 50, 20, 50); // width is the right edge of the screen, height - 50 is the y position of the cactus
+            if (!lastCactus || (width - lastCactus.x) >= minDistance) { // IF there is no last cactus or the distance between the last cactus and the right edge of the screen is greater than minDistance
+                cacti.push(cactus); // Add the cactus to the array
             }
             setTimeout(addCactus, Math.random() * cactusInterval + 500); // Random interval based on cactusInterval
         }
@@ -151,11 +151,11 @@
         function checkCollision(dino, cactus) {
             const buffer = 8; // Adjust this value to fine-tune the collision detection
             return (
-                dino.x + buffer < cactus.x + cactus.w - buffer &&
-                dino.x + dino.w - buffer > cactus.x + buffer &&
-                dino.y + buffer < cactus.y + cactus.h - buffer &&
-                dino.y + dino.h - buffer > cactus.y + buffer
-            );
+                dino.x + buffer < cactus.x + cactus.w - buffer && // Checks if the right side of the dino is to the left side of the right side of the cactus
+                dino.x + dino.w - buffer > cactus.x + buffer && // Checks if the left side of the dino is to the right side of the left side of the cactus
+                dino.y + buffer < cactus.y + cactus.h - buffer && // Checks if the top side of the dino is above the bottom side of the cactus
+                dino.y + dino.h - buffer > cactus.y + buffer // Checks if the bottom side of the dino is below the top side of the cactus
+            ); // If all of these conditions are true, then the dino and cactus are colliding
         }
 
         function drawTimeandCactipassed() {
@@ -169,17 +169,17 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
-                dyno.jump();
+                dyno.jump(); // Jump when space is pressed
             }
         });
 
         function animate() {
             if (gameOver) return;
 
-            frame++;
-            ctx.clearRect(0, 0, width, height);
-            dyno.move();
-            dyno.draw(ctx, frame);
+            frame++; 
+            ctx.clearRect(0, 0, width, height); 
+            dyno.move(); 
+            dyno.draw(ctx, frame); 
             cacti.forEach((cactus, index) => {
                 cactus.move(speed);
                 cactus.draw(ctx);
@@ -191,7 +191,7 @@
                 if (cactus.x + cactus.w < 0) {
                     cacti.splice(index, 1); // Remove cactus if it goes off screen
                 }
-                if (cactus.x + cactus.w < dyno.x && !cactus.passed) {
+                if (cactus.x + cactus.w < dyno.x && !cactus.passed) { // If the cactus has passed the dino and is not marked as passed yet
                     cactus.passed = true; // Mark cactus as passed
                     cactiPassed++; // Increment the cactus counter
                 }
