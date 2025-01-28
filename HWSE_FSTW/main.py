@@ -22,6 +22,10 @@ class ESP32_BLE():
         # Initialisiere Piezo-Speaker
         self.buzzer = PWM(Pin(25))  # GPIO 25 für Piezo-Speaker
 
+        # Initialisiere Onboard-LED (GPIO 2)
+        self.led = Pin(2, Pin.OUT)
+        self.led.off()
+
     def beep(self, frequency, duration):
         """Piepton mit Frequenz und Dauer"""
         self.buzzer.freq(frequency)  # Frequenz des Tons
@@ -88,6 +92,13 @@ class ESP32_BLE():
         self.beep(200, 0.1)
         sleep(0.1)
 
+    def blink_led(self):
+        """Lässt die Onboard-LED blinken"""
+        self.led.on()
+        sleep_ms(200)
+        self.led.off()
+        sleep_ms(200)
+
     def calibrate_jump_threshold(self, num_jumps=5):
         print(f"Starte Kalibrierung für {num_jumps} Sprünge...")
         jump_values = []
@@ -95,6 +106,7 @@ class ESP32_BLE():
         for i in range(num_jumps):
             print(f"Warte auf Sprung {i + 1}...")
             while True:
+                self.blink_led()  # LED blinkt während der Kalibrierung
                 self.waiting_tone()  # Warte-Ton
                 x = self.sensor.xValue
                 if x > self.jump_threshold:
@@ -108,6 +120,9 @@ class ESP32_BLE():
             self.jump_threshold = min(jump_values) - 10
             print(f"Kalibrierung abgeschlossen. Neuer Schwellenwert: {self.jump_threshold}")
             self.success_melody()  # Erfolgsmelodie abspielen
+
+        # Schalte die LED aus
+        self.led.off()
 
     def detect_jump(self):
         while True:
