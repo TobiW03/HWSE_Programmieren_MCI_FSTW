@@ -24,9 +24,8 @@ async def run():
         print(f"Verbunden mit {ESP32_ADDRESS}")
         await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
-        # Endlosschleife, um die Benachrichtigungen zu empfangen.
-        while True:
-            await asyncio.sleep(1)
+        # Warte asynchron auf Benachrichtigungen, ohne künstliche Pausen
+        await asyncio.Event().wait()  # Blockiere den Task ohne Verzögerung
 
 # Hauptaufruf, um die asynchrone Funktion zu starten
 asyncio.run(run())
