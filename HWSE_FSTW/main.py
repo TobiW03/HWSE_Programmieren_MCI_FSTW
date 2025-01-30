@@ -4,7 +4,9 @@ import ubluetooth
 from ADXL345 import ADXL345_I2C
 
 class ESP32_BLE():
+    """Klasse für die Bluetooth-Kommunikation mit einem ESP32-Mikrocontroller"""
     def __init__(self, name):
+        """Initialisierung des ESP32-Mikrocontrollers"""
         self.name = name
         self.ble = ubluetooth.BLE()
         self.ble.active(True)
@@ -34,16 +36,19 @@ class ESP32_BLE():
         self.buzzer.duty(0)         # Ton ausschalten
 
     def connected(self):
+        """Wird aufgerufen, wenn eine BLE-Verbindung hergestellt wird"""
         global is_ble_connected
         is_ble_connected = True
         self.timer1.deinit()
 
     def disconnected(self):
+        """Wird aufgerufen, wenn die BLE-Verbindung getrennt wird"""
         global is_ble_connected
         is_ble_connected = False
         self.timer1.init(period=100, mode=Timer.PERIODIC, callback=lambda t: None)
 
     def ble_irq(self, event, data):
+        """Interrupt-Handler für BLE-Ereignisse"""
         global ble_msg
         if event == 1:
             self.connected()
@@ -55,6 +60,7 @@ class ESP32_BLE():
             ble_msg = buffer.decode('UTF-8').strip()
 
     def register(self):
+        """Registrierung der BLE-Services und Charakteristiken"""
         NUS_UUID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E'
         RX_UUID = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E'
         TX_UUID = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'
@@ -66,29 +72,31 @@ class ESP32_BLE():
         ((self.tx, self.rx,), ) = self.ble.gatts_register_services(SERVICES)
 
     def send(self, data):
+        """Senden einer Bluetooth Nachricht"""
         self.ble.gatts_notify(0, self.tx, data)
 
     def advertiser(self):
+        """BLE-Advertiser mit Namen"""
         name = bytes(self.name, 'UTF-8')
         adv_data = bytearray([0x02, 0x01, 0x06]) + bytearray([len(name) + 1, 0x09]) + name
         self.ble.gap_advertise(100, adv_data)
 
     def success_melody(self):
-        """Spielt eine Melodie für den Erfolg"""
+        """Spielt eine Melodie für den Erfolg der Kalibrierung"""
         melody = [(784, 0.3), (880, 0.3), (988, 0.3), (1047, 0.5)]  # G5, A5, B5, C6
         for freq, duration in melody:
             self.beep(freq, duration)
             sleep(0.1)
 
     def funny_tone(self):
-        """Spielt einen lustigen Ton"""
+        """Spielt einen lustigen Ton bei Sprungerkennung"""
         tones = [(400, 0.1), (800, 0.1), (600, 0.2)]
         for freq, duration in tones:
             self.beep(freq, duration)
             sleep(0.05)
 
     def waiting_tone(self):
-        """Spielt ein Wartegeräusch"""
+        """Spielt ein Wartegeräusch - während Kalibrierung"""
         self.beep(200, 0.1)
         sleep(0.1)
 
@@ -100,6 +108,7 @@ class ESP32_BLE():
         sleep_ms(200)
 
     def calibrate_jump_threshold(self, num_jumps=5):
+        """Kalibrierung des Schwellenwerts für Sprungerkennung"""
         print(f"Starte Kalibrierung für {num_jumps} Sprünge...")
         jump_values = []
 
@@ -125,6 +134,7 @@ class ESP32_BLE():
         self.led.off()
 
     def detect_jump(self):
+        """Erkennt einen Sprung und sendet eine Nachricht"""
         while True:
             if is_ble_connected:
                 x = self.sensor.xValue

@@ -1,10 +1,10 @@
-# Wir importieren die notwendigen Bibliotheken:
-import asyncio #asyncio ist eine Bibliothek, die es ermöglicht, asynchrone Funktionen auszuführen
-from bleak import BleakClient #Bleak ist eine Bibliothek, die es ermöglicht, mit Bluetooth Low Energy (BLE) Geräten zu kommunizieren
+#Imports
+import asyncio #asyncio ermöglicht, asynchrone Funktionen auszuführen
+from bleak import BleakClient #Bleak ermöglicht, mit Bluetooth Low Energy (BLE) Geräten zu kommunizieren
 import keyboard  #Bibliothek zur Simulation von Tasteneingaben
 
-# Die MAC-Adresse des ESP32. Diese muss mit der tatsächlichen MAC-Adresse des ESP32 übereinstimmen.
-ESP32_ADDRESS = "7C:9E:BD:61:9E:76"  # Beispiel: Ersetze dies mit der korrekten MAC-Adresse
+# Die MAC-Adresse des ESP32
+ESP32_ADDRESS = "7C:9E:BD:61:9E:76"  # Unsere Mac-Adresse des ESP32
 
 # UUIDs für den Service und die Charakteristik, die auf dem ESP32 registriert sind.
 SERVICE_UUID = "00001818-0000-1000-8000-00805f9b34fb"
