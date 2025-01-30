@@ -134,7 +134,7 @@
         function addCactus() {
             if (gameOver) return; // Don't add cacti if the game is over
             const lastCactus = cacti[cacti.length - 1]; // Get the last cactus
-            const minDistance = dynoW * 2;
+            const minDistance = dynoW * 3;
             const cactus = new Cactus(width, height - 50, 20, 50); // width is the right edge of the screen, height - 50 is the y position of the cactus
             if (!lastCactus || (width - lastCactus.x) >= minDistance) { // IF there is no last cactus or the distance between the last cactus and the right edge of the screen is greater than minDistance
                 cacti.push(cactus); // Add the cactus to the array
