@@ -40,6 +40,6 @@ Das Repository enthält folgende Ordner:
 
 ##  Weiterentwicklung
 Geplante Features:
-- Automatische Kalibrierung der Sprunghöhe
 - Erweiterte Spielmechaniken
 - Optimierung der Bluetooth-Kommunikation
+- Minimierung der Latenz
