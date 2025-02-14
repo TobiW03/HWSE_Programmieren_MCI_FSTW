@@ -16,7 +16,7 @@ Das Repository enthält folgende Ordner:
 - Python 3.x
 - Ein ESP32 mit MicroPython
 - Bluetooth-fähiger Laptop
-- Benötigte Python-Abhängigkeiten (siehe `requirements.txt`)
+- Benötigte Python-Bibliotheken (siehe `requirements.txt`, downloade die benötigten Bibliotheken via `pip install -r requirements.txt`)
 
 ### Setup
 1. **ESP32 vorbereiten**
