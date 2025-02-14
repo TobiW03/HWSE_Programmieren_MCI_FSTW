@@ -1,8 +1,4 @@
-# HWSE_Programmieren_MCI_FSTW
-HWSE Projekt Jump
-
-
-# Projekt: HWSE ESP32 Jump Game
+# Project Jump
 
 ##  Projektbeschreibung
 Dieses Projekt verbindet einen ESP32 mit einem Laptop via Bluetooth, um ein Spiel durch physische Sprungbewegungen zu steuern. Der ESP32 erkennt Sprünge und sendet ein Signal an den Laptop, der die Eingabe verarbeitet und an das Spiel weiterleitet.
